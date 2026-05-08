@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Eye, EyeOff } from "lucide-react";
 
 const ARTISAN_SKILLS = [
   "Plumber",
@@ -32,6 +33,7 @@ function RegisterForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
 
   // Step 2 artisan fields
   const [skills, setSkills] = useState<string[]>([]);
@@ -191,12 +193,13 @@ function RegisterForm() {
                   className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                 />
               </div>
-              <div>
+              <div className="relative">
                 <label className="block text-xs font-medium text-stone-500 mb-1">
                   Password
                 </label>
                 <input
-                  type="password"
+                  //   type="password"
+                  type={showPass ? "text" : "password"}
                   required
                   minLength={8}
                   value={password}
@@ -204,7 +207,36 @@ function RegisterForm() {
                   placeholder="At least 8 characters"
                   className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/12 text-stone-400 hover:text-stone-600"
+                  aria-label="Toggle password visibility"
+                >
+                  {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
               </div>
+
+              {/* <div className="relative">
+                <input
+                  id="password"
+                  type={showPass ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full h-10 px-3 pr-10 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                  aria-label="Toggle password visibility"
+                >
+                  {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div> */}
             </>
           )}
 

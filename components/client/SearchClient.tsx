@@ -212,11 +212,11 @@ export default function SearchClient({ artisans, clientId }: Props) {
       {/* Hire modal */}
       {selected && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50  flex items-center justify-center p-4 min-h-screen"
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl fade-up max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl fade-up max-h-[90vh] overflow-y-auto mx-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -301,7 +301,7 @@ export default function SearchClient({ artisans, clientId }: Props) {
                 {loading && (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 )}
-                {loading ? "Posting job…" : "Pay & Post Job"}
+                {loading ? "Posting job…" : "Post Job"}
               </button>
             </form>
           </div>
