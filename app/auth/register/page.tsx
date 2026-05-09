@@ -37,14 +37,41 @@ function RegisterForm() {
 
   // Step 2 artisan fields
   const [skills, setSkills] = useState<string[]>([]);
+  const [skillsOpen, setSkillsOpen] = useState(false);
+  // const [otherSkill, setOtherSkill] = useState("");
+  const [otherSkills, setOtherSkills] = useState<string[]>([]);
+  const [otherSkillInput, setOtherSkillInput] = useState("");
   const [bio, setBio] = useState("");
   const [hourlyRate, setHourlyRate] = useState("");
   const [location, setLocation] = useState("");
 
   function toggleSkill(skill: string) {
+    if (skill === "Other") {
+      // "Other" in the skills array just acts as a flag — don't toggle it off from here
+      if (!skills.includes("Other")) {
+        setSkills((prev) => [...prev, "Other"]);
+      }
+      return;
+    }
     setSkills((prev) =>
       prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill],
     );
+  }
+
+  function addOtherSkill() {
+    const trimmed = otherSkillInput.trim();
+    if (!trimmed || otherSkills.includes(trimmed)) return;
+    setOtherSkills((prev) => [...prev, trimmed]);
+    setOtherSkillInput("");
+  }
+
+  function removeOtherSkill(skill: string) {
+    const updated = otherSkills.filter((s) => s !== skill);
+    setOtherSkills(updated);
+    // If no custom skills left, remove the "Other" flag from skills too
+    if (updated.length === 0) {
+      setSkills((prev) => prev.filter((s) => s !== "Other"));
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -99,7 +126,7 @@ function RegisterForm() {
         .from("artisan_profiles")
         .insert({
           user_id: userId,
-          skills,
+          skills: [...skills.filter((s) => s !== "Other"), ...otherSkills],
           bio: bio || null,
           hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
           location: location || null,
@@ -205,7 +232,6 @@ function RegisterForm() {
                   Password
                 </label>
                 <input
-                  //   type="password"
                   type={showPass ? "text" : "password"}
                   required
                   minLength={8}
@@ -223,52 +249,157 @@ function RegisterForm() {
                   {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
-
-              {/* <div className="relative">
-                <input
-                  id="password"
-                  type={showPass ? "text" : "password"}
-                  required
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full h-10 px-3 pr-10 rounded-lg border border-stone-200 text-sm text-stone-900 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
-                  aria-label="Toggle password visibility"
-                >
-                  {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div> */}
             </>
           )}
 
           {step === 2 && role === "artisan" && (
             <>
-              {/* Skill selector — multi-select pill grid */}
               <div>
-                <label className="block text-xs font-medium text-stone-500 mb-2">
-                  Your Skills (select all that apply)
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {ARTISAN_SKILLS.map((skill) => (
+                {/* Skill selector — multi-select dropdown */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-500 mb-2">
+                    Your Skills (select all that apply)
+                  </label>
+
+                  {/* Dropdown trigger */}
+                  <div className="relative">
                     <button
-                      key={skill}
                       type="button"
-                      onClick={() => toggleSkill(skill)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                        skills.includes(skill)
-                          ? "bg-stone-900 text-white border-stone-900"
-                          : "bg-white text-stone-600 border-stone-200 hover:border-stone-400"
-                      }`}
+                      onClick={() => setSkillsOpen((v) => !v)}
+                      className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-stone-900 transition bg-white"
                     >
-                      {skill}
+                      <span
+                        className={
+                          skills.length === 0
+                            ? "text-stone-400"
+                            : "text-stone-700"
+                        }
+                      >
+                        {skills.length === 0 && otherSkills.length === 0
+                          ? "Select skills…"
+                          : [
+                              ...skills.filter((s) => s !== "Other"),
+                              ...otherSkills,
+                            ].join(", ")}
+                      </span>
+                      <svg
+                        className={`w-4 h-4 text-stone-400 transition-transform ${skillsOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
                     </button>
-                  ))}
+
+                    {/* Dropdown list */}
+                    {skillsOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-stone-200 rounded-lg shadow-md max-h-56 overflow-y-auto">
+                        {[...ARTISAN_SKILLS, "Other"].map((skill) => (
+                          <button
+                            key={skill}
+                            type="button"
+                            onClick={() => toggleSkill(skill)}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 transition-colors"
+                          >
+                            <span
+                              className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${
+                                skills.includes(skill)
+                                  ? "bg-stone-900 border-stone-900"
+                                  : "border-stone-300"
+                              }`}
+                            >
+                              {skills.includes(skill) && (
+                                <svg
+                                  className="w-2.5 h-2.5 text-white"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth={3}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              )}
+                            </span>
+                            {skill}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Selected skill pills */}
+                  {(skills.length > 0 || otherSkills.length > 0) && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {skills
+                        .filter((s) => s !== "Other")
+                        .map((skill) => (
+                          <span
+                            key={skill}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-stone-100 text-stone-700"
+                          >
+                            {skill}
+                            <button
+                              type="button"
+                              onClick={() => toggleSkill(skill)}
+                              className="text-stone-400 hover:text-stone-700 leading-none"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      {otherSkills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                        >
+                          {skill}
+                          <button
+                            type="button"
+                            onClick={() => removeOtherSkill(skill)}
+                            className="text-amber-400 hover:text-amber-700 leading-none"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* "Other" custom input */}
+
+                  {skills.includes("Other") && (
+                    <div className="mt-2 flex gap-2">
+                      <input
+                        value={otherSkillInput}
+                        onChange={(e) => setOtherSkillInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            addOtherSkill();
+                          }
+                        }}
+                        placeholder="Type a skill and press Add…"
+                        className="flex-1 h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
+                      />
+                      <button
+                        type="button"
+                        onClick={addOtherSkill}
+                        className="h-10 px-3 rounded-lg border border-stone-200 text-sm text-stone-600 hover:bg-stone-50 transition whitespace-nowrap"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
               <div>
@@ -304,7 +435,7 @@ function RegisterForm() {
                   <input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Lagos, Nigeria"
+                    placeholder="Washington, DC"
                     className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                   />
                 </div>
