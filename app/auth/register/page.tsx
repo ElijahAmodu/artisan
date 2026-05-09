@@ -132,7 +132,9 @@ function RegisterForm() {
           >
             {role === "artisan"
               ? "Artisan Registration"
-              : "Client Registration"}
+              : role === "client"
+                ? "Client Registration"
+                : "Admin Registration"}
             {role === "artisan" && (
               <span className="opacity-70">— Step {step} of 2</span>
             )}

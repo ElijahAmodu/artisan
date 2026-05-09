@@ -3,11 +3,6 @@ import { createClient as createBrowserClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 
 // POST /api/auth/register
-// Handles the full registration flow server-side:
-//   1. Creates the auth user (browser client — establishes session cookie)
-//   2. Uses the service-role client to insert profiles and artisan_profiles
-//      so RLS is bypassed for the initial row creation, avoiding the race
-//      condition where auth.uid() is not yet available on the client.
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

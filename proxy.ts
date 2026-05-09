@@ -1,4 +1,3 @@
-// src/middleware.ts (filename must stay as middleware.ts)
 import { updateSession } from "@/lib/supabase/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
