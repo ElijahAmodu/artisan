@@ -120,7 +120,12 @@ function RegisterForm() {
     router.refresh();
   }
 
-  const accentClass = role === "artisan" ? "bg-amber-500" : "bg-sky-500";
+  const accentClass =
+    role === "artisan"
+      ? "bg-amber-500"
+      : role === "client"
+        ? "bg-sky-500"
+        : "bg-[#000]";
 
   return (
     <div className="w-full max-w-md">
