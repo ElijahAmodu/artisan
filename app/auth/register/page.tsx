@@ -28,6 +28,9 @@ const ARTISAN_SKILLS = [
   "Fitter and Turner",
   "Mechanical Fitter",
   "Pipe Fitter",
+  "Meson",
+  "Farmers",
+  "Cleaners",
 ];
 
 const NIGERIA_STATES = [

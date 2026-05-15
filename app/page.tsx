@@ -9,15 +9,15 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <Hammer size={20} className="text-amber-500" />
             <span className="font-bold text-stone-900 tracking-tight text-lg">
-              DollyArtisan
+              ArtisanQuarters
             </span>
           </div>
-          <Link
+          {/* <Link
             href="/auth/login"
             className="text-sm text-stone-600 hover:text-stone-900 transition-colors"
           >
             Sign In
-          </Link>
+          </Link> */}
         </div>
       </header>
 
@@ -189,7 +189,7 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-stone-100 mt-16 py-8 text-center text-sm text-stone-400">
-        &copy; {new Date().getFullYear()} DollyArtisan. All rights reserved.
+        &copy; {new Date().getFullYear()} ArtisanQuarters. All rights reserved.
       </footer>
     </div>
   );

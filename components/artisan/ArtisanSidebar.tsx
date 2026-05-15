@@ -63,7 +63,9 @@ export default function ArtisanSidebar({ profile }: Props) {
       <div className="md:hidden sticky top-0 z-40 bg-white border-b border-stone-100 px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Hammer size={18} className="text-amber-500" />
-          <span className="font-bold text-stone-900 text-sm">DollyArtisan</span>
+          <span className="font-bold text-stone-900 text-sm">
+            ArtisanQuarters
+          </span>
         </div>
         <button
           onClick={() => setOpen((o) => !o)}
@@ -99,7 +101,7 @@ export default function ArtisanSidebar({ profile }: Props) {
         <div className="flex items-center gap-2 px-2 mb-8 mt-2">
           <Hammer size={18} className="text-amber-500" />
           <span className="font-bold text-stone-900 text-sm tracking-tight">
-            DollyArtisan
+            ArtisanQuarters
           </span>
         </div>
 

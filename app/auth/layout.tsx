@@ -15,7 +15,7 @@ export default function AuthLayout({
           <Link href="/" className="flex items-center gap-2">
             <Hammer size={18} className="text-amber-500" />
             <span className="font-bold text-stone-900 tracking-tight">
-              DollyArtisan
+              ArtisanQuarters
             </span>
           </Link>
         </div>

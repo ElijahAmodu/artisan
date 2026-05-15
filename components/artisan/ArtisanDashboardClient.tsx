@@ -281,14 +281,14 @@ export default function ArtisanDashboardClient({
                   <button
                     disabled={isActing}
                     onClick={() => respondToJob(job.id as string, false)}
-                    className="flex-1 h-9 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 disabled:opacity-50 transition-colors"
+                    className="flex-1 h-9 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 disabled:opacity-50 transition-colors cursor-pointer"
                   >
                     {isActing ? "…" : "Decline"}
                   </button>
                   <button
                     disabled={isActing}
                     onClick={() => respondToJob(job.id as string, true)}
-                    className="flex-1 h-9 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+                    className="flex-1 h-9 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-50 transition-colors cursor-pointer"
                   >
                     {isActing ? "…" : "Accept Job"}
                   </button>

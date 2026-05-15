@@ -41,7 +41,7 @@ export default function Navbar({ user }: NavbarProps) {
         >
           <span className="text-amber-500 text-xl">&#9874;</span>
           <span className="font-bold text-stone-900 tracking-tight">
-            DollyArtisan
+            ArtisanQuarters
           </span>
         </Link>
 
