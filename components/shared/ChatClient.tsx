@@ -47,35 +47,59 @@ export default function ChatClient({
 
   // Subscribe to new messages via Supabase Realtime channels.
   useEffect(() => {
-    const channel = supabase
-      .channel(`chat:${job.id as string}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `job_id=eq.${job.id as string}`,
-        },
-        async (payload) => {
-          // Fetch full sender details for the new message.
-          const { data: full } = await supabase
-            .from("messages")
-            .select("*, sender:profiles!messages_sender_id_fkey(id, full_name)")
-            .eq("id", payload.new.id)
-            .single();
+    const setupChannel = async () => {
+      // Get the current session token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-          if (full) {
-            setMessages((prev) => [...prev, full as Message]);
-          }
-        },
-      )
-      .subscribe();
+      const channel = supabase
+        .channel(`chat:${job.id as string}`, {
+          config: {
+            broadcast: { self: false },
+            presence: { key: currentUserId },
+            // Pass the access token so RLS is evaluated on the realtime connection
+            // params: {
+            //   apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            // },
+          },
+        })
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `job_id=eq.${job.id as string}`,
+          },
+          async (payload) => {
+            const { data: full } = await supabase
+              .from("messages")
+              .select(
+                "*, sender:profiles!messages_sender_id_fkey(id, full_name)",
+              )
+              .eq("id", payload.new.id)
+              .single();
+
+            if (full) {
+              setMessages((prev) => [...prev, full as Message]);
+            }
+          },
+        )
+        .subscribe();
+
+      return channel;
+    };
+
+    let channelRef: ReturnType<typeof supabase.channel> | null = null;
+
+    setupChannel().then((ch) => {
+      channelRef = ch;
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef) supabase.removeChannel(channelRef);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [job.id]);
 
   async function sendMessage(e: React.FormEvent) {

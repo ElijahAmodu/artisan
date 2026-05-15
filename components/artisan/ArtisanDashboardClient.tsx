@@ -167,51 +167,55 @@ export default function ArtisanDashboardClient({
           <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide px-1">
             Active Jobs
           </h2>
-          {activeJobs.map((job) => {
-            const client = job.client as Record<string, string>;
-            return (
-              <div
-                key={job.id as string}
-                className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5"
-              >
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <p className="font-semibold text-stone-900">
-                      {job.title as string}
-                    </p>
-                    <p className="text-xs text-stone-500 mt-0.5">
-                      Client: {client?.full_name}
-                    </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {activeJobs.map((job) => {
+              const client = job.client as Record<string, string>;
+              return (
+                <div
+                  key={job.id as string}
+                  className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div>
+                      <p className="font-semibold text-stone-900">
+                        {job.title as string}
+                      </p>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        Client: {client?.full_name}
+                      </p>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 whitespace-nowrap">
+                      In Progress
+                    </span>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 whitespace-nowrap">
-                    In Progress
-                  </span>
+
+                  <p className="text-sm text-stone-500 mb-4">
+                    {job.description as string}
+                  </p>
+
+                  <div className="flex gap-2 flex-wrap">
+                    <a
+                      href={`/artisan/jobs/${job.id as string}/chat`}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-white text-sm rounded-xl hover:bg-stone-800 transition-colors"
+                    >
+                      <MessageSquare size={14} /> Open Chat
+                    </a>
+                    <a
+                      href={`/artisan/jobs/${job.id as string}/complete`}
+                      className="flex items-center gap-1.5 px-4 py-2 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors"
+                    >
+                      <Flag size={14} /> Mark Complete
+                    </a>
+                  </div>
                 </div>
-                <p className="text-sm text-stone-500 mb-4">
-                  {job.description as string}
-                </p>
-                <div className="flex gap-2 flex-wrap">
-                  <a
-                    href={`/artisan/jobs/${job.id as string}/chat`}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-white text-sm rounded-xl hover:bg-stone-800 transition-colors"
-                  >
-                    <MessageSquare size={14} /> Open Chat
-                  </a>
-                  <a
-                    href={`/artisan/jobs/${job.id as string}/complete`}
-                    className="flex items-center gap-1.5 px-4 py-2 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors"
-                  >
-                    <Flag size={14} /> Mark Complete
-                  </a>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
       {/* Pending job requests */}
-      <div className="space-y-3 ">
+      <div className="space-y-3">
         <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide px-1">
           New Requests {pendingJobs.length > 0 && `(${pendingJobs.length})`}
         </h2>
@@ -222,67 +226,77 @@ export default function ArtisanDashboardClient({
           </div>
         )}
 
-        {pendingJobs.map((job) => {
-          const client = job.client as Record<string, string>;
-          const isActing = actionId === (job.id as string);
-          return (
-            <div
-              key={job.id as string}
-              className="bg-white rounded-2xl border border-amber-100 shadow-sm p-5 fade-up "
-            >
-              {/* Request header */}
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle size={15} className="text-amber-500" />
-                <span className="text-sm font-semibold text-stone-900">
-                  New Request
-                </span>
-                <span className="ml-auto text-xs text-stone-400">
-                  {timeAgo(job.created_at as string)}
-                </span>
-              </div>
-
-              <div className="space-y-1 mb-4 text-sm">
-                <p>
-                  <span className="font-medium text-stone-700">Client:</span>{" "}
-                  <span className="text-stone-600">{client?.full_name}</span>
-                </p>
-                <p>
-                  <span className="font-medium text-stone-700">Issue:</span>{" "}
-                  <span className="text-stone-600">{job.title as string}</span>
-                </p>
-                <p>
-                  <span className="font-medium text-stone-700">Budget:</span>{" "}
-                  <span className="text-stone-600">
-                    {formatCurrency(job.budget as number)}
+        <div
+          className={
+            pendingJobs.length === 0
+              ? "hidden"
+              : "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+          }
+        >
+          {pendingJobs.map((job) => {
+            const client = job.client as Record<string, string>;
+            const isActing = actionId === (job.id as string);
+            return (
+              <div
+                key={job.id as string}
+                className="bg-white rounded-2xl border border-amber-100 shadow-sm p-5 fade-up"
+              >
+                {/* Request header */}
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle size={15} className="text-amber-500" />
+                  <span className="text-sm font-semibold text-stone-900">
+                    New Request
                   </span>
-                </p>
-                {typeof job.description === "string" && job.description && (
-                  <p className="text-stone-500 text-xs mt-1 leading-relaxed">
-                    {job.description}
-                  </p>
-                )}
-              </div>
+                  <span className="ml-auto text-xs text-stone-400">
+                    {timeAgo(job.created_at as string)}
+                  </span>
+                </div>
 
-              {/* Accept / Decline actions */}
-              <div className="flex gap-2">
-                <button
-                  disabled={isActing}
-                  onClick={() => respondToJob(job.id as string, false)}
-                  className="flex-1 h-9 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 disabled:opacity-50 transition-colors"
-                >
-                  {isActing ? "…" : "Decline"}
-                </button>
-                <button
-                  disabled={isActing}
-                  onClick={() => respondToJob(job.id as string, true)}
-                  className="flex-1 h-9 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-50 transition-colors"
-                >
-                  {isActing ? "…" : "Accept Job"}
-                </button>
+                <div className="space-y-1 mb-4 text-sm">
+                  <p>
+                    <span className="font-medium text-stone-700">Client:</span>{" "}
+                    <span className="text-stone-600">{client?.full_name}</span>
+                  </p>
+                  <p>
+                    <span className="font-medium text-stone-700">Issue:</span>{" "}
+                    <span className="text-stone-600">
+                      {job.title as string}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-medium text-stone-700">Budget:</span>{" "}
+                    <span className="text-stone-600">
+                      {formatCurrency(job.budget as number)}
+                    </span>
+                  </p>
+                  {typeof job.description === "string" && job.description && (
+                    <p className="text-stone-500 text-xs mt-1 leading-relaxed">
+                      {job.description}
+                    </p>
+                  )}
+                </div>
+
+                {/* Accept / Decline actions */}
+                <div className="flex gap-2">
+                  <button
+                    disabled={isActing}
+                    onClick={() => respondToJob(job.id as string, false)}
+                    className="flex-1 h-9 rounded-xl bg-rose-500 text-white text-sm font-medium hover:bg-rose-600 disabled:opacity-50 transition-colors"
+                  >
+                    {isActing ? "…" : "Decline"}
+                  </button>
+                  <button
+                    disabled={isActing}
+                    onClick={() => respondToJob(job.id as string, true)}
+                    className="flex-1 h-9 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+                  >
+                    {isActing ? "…" : "Accept Job"}
+                  </button>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
