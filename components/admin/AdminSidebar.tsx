@@ -100,7 +100,7 @@ export default function AdminSidebar({ profile }: Props) {
         <div className="flex items-center gap-2 px-2 mb-2 mt-2">
           <Hammer size={18} className="text-amber-500" />
           <span className="font-bold text-stone-900 text-sm tracking-tight">
-            ArtisanConnect
+            DollyArtisan
           </span>
         </div>
         <p className="text-xs text-stone-400 px-2 mb-6">Admin Panel</p>

@@ -126,7 +126,7 @@ export default function AdminDashboardClient({
   ];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 fade-up">
+    <div className="max-w-7xl mx-auto space-y-8 fade-up">
       {/* Toast */}
       {toast && (
         <div

@@ -17,6 +17,57 @@ const ARTISAN_SKILLS = [
   "HVAC Technician",
   "Roofer",
   "Landscaper",
+  "Bricklayer",
+  "Millwright",
+  "Boilermaker",
+  "Mechanic including Automotive",
+  "Mechanic",
+  "Diesel Mechanic",
+  "Carpenter and Joiner",
+  "Rigger",
+  "Fitter and Turner",
+  "Mechanical Fitter",
+  "Pipe Fitter",
+];
+
+const NIGERIA_STATES = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "FCT - Abuja",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
 ];
 
 function RegisterForm() {
@@ -428,16 +479,35 @@ function RegisterForm() {
                     className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-xs font-medium text-stone-500 mb-1">
                     Location
                   </label>
                   <input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Washington, DC"
+                    placeholder="Lagos, Nigeria"
                     className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                   />
+                </div> */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-500 mb-1">
+                    Location
+                  </label>
+                  <select
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition bg-white text-stone-700 appearance-none"
+                  >
+                    <option value="" disabled>
+                      Select a state…
+                    </option>
+                    {NIGERIA_STATES.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </>
@@ -446,7 +516,7 @@ function RegisterForm() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full h-10 rounded-lg text-white text-sm font-medium disabled:opacity-60 transition flex items-center justify-center gap-2 ${accentClass} hover:opacity-90`}
+            className={`w-full h-10 rounded-lg text-white text-sm font-medium disabled:opacity-60 transition flex items-center justify-center gap-2 ${accentClass} hover:opacity-90 cursor-pointer`}
           >
             {loading && (
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -462,7 +532,7 @@ function RegisterForm() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="w-full text-center text-xs text-stone-400 hover:text-stone-600 mt-1"
+              className="w-full text-center text-xs text-stone-400 hover:text-stone-600 mt-1 cursor-pointer"
             >
               Back to step 1
             </button>

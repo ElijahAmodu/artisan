@@ -91,7 +91,7 @@ export default function ArtisanDashboardClient({
   const isApproved = artisanProfile?.is_approved as boolean;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5 fade-up">
+    <div className="max-w-7xl mx-auto space-y-5 fade-up">
       {/* Approval pending banner */}
       {!isApproved && (
         <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
@@ -211,7 +211,7 @@ export default function ArtisanDashboardClient({
       )}
 
       {/* Pending job requests */}
-      <div className="space-y-3">
+      <div className="space-y-3 ">
         <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide px-1">
           New Requests {pendingJobs.length > 0 && `(${pendingJobs.length})`}
         </h2>
@@ -228,7 +228,7 @@ export default function ArtisanDashboardClient({
           return (
             <div
               key={job.id as string}
-              className="bg-white rounded-2xl border border-amber-100 shadow-sm p-5 fade-up"
+              className="bg-white rounded-2xl border border-amber-100 shadow-sm p-5 fade-up "
             >
               {/* Request header */}
               <div className="flex items-center gap-2 mb-3">

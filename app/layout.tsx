@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ArtisanConnect — Hire Trusted Professionals",
+  title: "DollyArtisan — Hire Trusted Professionals",
   description:
     "Connect with vetted artisans for plumbing, electrical, carpentry and more. Secure escrow payments. Real-time job tracking.",
 };
