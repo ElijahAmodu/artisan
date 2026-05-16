@@ -5,6 +5,7 @@ import { Search, MessageSquare, Star } from "lucide-react";
 import ReviewModal from "@/components/client/ReviewModal";
 import NegotiatingJobCard from "@/components/client/NegotiatingJob";
 import PaymentEscrowPrompt from "@/components/client/PaymentEscrowPrompt";
+import { NegotiationOffer } from "@/lib/types";
 
 // Client dashboard: shows active jobs and job history with contextual actions.
 export default async function ClientDashboardPage() {
@@ -29,7 +30,7 @@ export default async function ClientDashboardPage() {
   const allJobs = jobs ?? [];
 
   // Fetch the latest pending negotiation offer for each negotiating job
-  const negotiatingIds = allJobs
+  const negotiatingIds = (allJobs as any[])
     .filter((j) => j.status === "negotiating")
     .map((j) => j.id);
 
@@ -43,15 +44,22 @@ export default async function ClientDashboardPage() {
     .order("created_at", { ascending: false });
 
   // Build a map of job_id → latest offer (first one per job after sort)
+  // const offersByJob = (latestOffers ?? []).reduce<
+  //   Record<string, (typeof latestOffers)[number]>
+  // >((acc, offer) => {
+  //   if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+  //   return acc;
+  // }, {});
+
   const offersByJob = (latestOffers ?? []).reduce<
-    Record<string, (typeof latestOffers)[number]>
+    Record<string, NegotiationOffer>
   >((acc, offer) => {
-    if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+    if (!acc[offer.job_id]) acc[offer.job_id] = offer as NegotiationOffer;
     return acc;
   }, {});
 
-  const activeJobs = allJobs.filter((j) =>
-    ["pending", "accepted", "in_progress"].includes(j.status),
+  const activeJobs = (allJobs as any[]).filter((j) =>
+    ["pending", "accepted", "in_progress"].includes((j as any).status),
   );
   const negotiatingJobs = allJobs.filter((j) => j.status === "negotiating");
 
@@ -75,7 +83,7 @@ export default async function ClientDashboardPage() {
   const reviewedJobIds = new Set((existingReviews ?? []).map((r) => r.job_id));
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 fade-up">
+    <div className="max-w-7xl mx-auto space-y-6 fade-up">
       {/* Welcome header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
@@ -127,65 +135,68 @@ export default async function ClientDashboardPage() {
           <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide">
             Active Jobs
           </h2>
-          {activeJobs.map((job) => {
-            const artisan = job.artisan as Record<string, string>;
-            const { label, color } = getStatusMeta(job.status);
-            const isInProgress =
-              job.status === "accepted" || job.status === "in_progress";
 
-            return (
-              <div
-                key={job.id}
-                className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5"
-              >
-                {/* Artisan accepted banner */}
-                {isInProgress && (
-                  <div className="mb-3 px-3 py-1.5 bg-stone-900 text-white text-xs font-medium rounded-lg text-center">
-                    Artisan Accepted!
-                  </div>
-                )}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {activeJobs.map((job) => {
+              const artisan = job.artisan as Record<string, string>;
+              const { label, color } = getStatusMeta(job.status);
+              const isInProgress =
+                job.status === "accepted" || job.status === "in_progress";
 
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div>
-                    <p className="font-bold text-stone-900">
-                      {isInProgress ? "Job In Progress" : job.title}
-                    </p>
-                    {isInProgress && (
-                      <p className="text-sm text-stone-500 mt-0.5">
-                        {artisan?.full_name} is working on your job.
+              return (
+                <div
+                  key={job.id}
+                  className="bg-white rounded-2xl border border-sky-100 shadow-sm p-5"
+                >
+                  {/* Artisan accepted banner */}
+                  {isInProgress && (
+                    <div className="mb-3 px-3 py-1.5 bg-stone-900 text-white text-xs font-medium rounded-lg text-center">
+                      Artisan Accepted!
+                    </div>
+                  )}
+
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <p className="font-bold text-stone-900">
+                        {isInProgress ? "Job In Progress" : job.title}
                       </p>
-                    )}
-                    {!isInProgress && (
-                      <p className="text-xs text-stone-400 mt-0.5">
-                        Waiting for artisan response
-                      </p>
-                    )}
+                      {isInProgress && (
+                        <p className="text-sm text-stone-500 mt-0.5">
+                          {artisan?.full_name} is working on your job.
+                        </p>
+                      )}
+                      {!isInProgress && (
+                        <p className="text-xs text-stone-400 mt-0.5">
+                          Waiting for artisan response
+                        </p>
+                      )}
+                    </div>
+                    <span
+                      className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${color}`}
+                    >
+                      {label}
+                    </span>
                   </div>
-                  <span
-                    className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${color}`}
-                  >
-                    {label}
-                  </span>
-                </div>
 
-                <div className="text-sm text-stone-500 mb-4">
-                  <span className="font-medium text-stone-700">Budget:</span>{" "}
-                  {formatCurrency(job.budget)}
-                  <span className="mx-2 text-stone-200">·</span>
-                  <span>{timeAgo(job.created_at)}</span>
-                </div>
+                  <div className="text-sm text-stone-500 mb-4">
+                    <span className="font-medium text-stone-700">Budget:</span>{" "}
+                    {formatCurrency(job.budget)}
+                    <span className="mx-2 text-stone-200">·</span>
+                    <span>{timeAgo(job.created_at)}</span>
+                  </div>
 
-                {isInProgress && (
-                  <Link
-                    href={`/client/jobs/${job.id}/chat`}
-                    className="flex items-center gap-1.5 px-4 py-2 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors w-fit"
-                  >
-                    <MessageSquare size={14} /> Chat with Artisan
-                  </Link>
-                )}
-              </div>
-            );
-          })}
+                  {isInProgress && (
+                    <Link
+                      href={`/client/jobs/${job.id}/chat`}
+                      className="flex items-center gap-1.5 px-4 py-2 border border-stone-200 text-stone-700 text-sm rounded-xl hover:bg-stone-50 transition-colors w-fit"
+                    >
+                      <MessageSquare size={14} /> Chat with Artisan
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </section>
       )}
 

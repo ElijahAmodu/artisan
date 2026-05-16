@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Briefcase,
@@ -62,7 +63,13 @@ export default function ArtisanSidebar({ profile }: Props) {
       {/* Mobile top bar */}
       <div className="md:hidden sticky top-0 z-40 bg-white border-b border-stone-100 px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Hammer size={18} className="text-amber-500" />
+          <Image
+            src="/Abbreviation.svg"
+            alt="Logo"
+            width={48}
+            height={48}
+            className="w-8 h-8 md:w-12 md:h-12"
+          />
           <span className="font-bold text-stone-900 text-sm">
             ArtisanQuarters
           </span>
@@ -99,7 +106,13 @@ export default function ArtisanSidebar({ profile }: Props) {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-56 lg:w-60 shrink-0 bg-white border-r border-stone-100 min-h-screen sticky top-0 h-screen p-4">
         <div className="flex items-center gap-2 px-2 mb-8 mt-2">
-          <Hammer size={18} className="text-amber-500" />
+          <Image
+            src="/Abbreviation.svg"
+            alt="Logo"
+            width={28}
+            height={28}
+            className="w-8 h-8 md:w-8 md:h-8"
+          />
           <span className="font-bold text-stone-900 text-sm tracking-tight">
             ArtisanQuarters
           </span>

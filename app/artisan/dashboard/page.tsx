@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import ArtisanDashboardClient from "@/components/artisan/ArtisanDashboardClient";
+import { NegotiationOffer } from "@/lib/types";
 
 // Server component: fetches artisan profile + pending jobs, passes to client shell.
 export default async function ArtisanDashboardPage() {
@@ -39,9 +40,9 @@ export default async function ArtisanDashboardPage() {
     .in("status", ["accepted", "awaiting_payment", "in_progress"])
     .order("updated_at", { ascending: false });
 
-  const negotiatingIds = (pendingAndNegotiatingJobs ?? [])
-    .filter((j) => j.status === "negotiating")
-    .map((j) => j.id);
+  const negotiatingIds = ((pendingAndNegotiatingJobs ?? []) as any[])
+    .filter((j) => (j as any).status === "negotiating")
+    .map((j) => (j as any).id);
 
   const { data: latestOffers } = await supabase
     .from("negotiations")
@@ -52,10 +53,17 @@ export default async function ArtisanDashboardPage() {
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
+  // const offersByJob = (latestOffers ?? []).reduce<
+  //   Record<string, (typeof latestOffers)[number]>
+  // >((acc, offer) => {
+  //   if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+  //   return acc;
+  // }, {});
+
   const offersByJob = (latestOffers ?? []).reduce<
-    Record<string, (typeof latestOffers)[number]>
+    Record<string, NegotiationOffer>
   >((acc, offer) => {
-    if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+    if (!acc[offer.job_id]) acc[offer.job_id] = offer as NegotiationOffer;
     return acc;
   }, {});
 

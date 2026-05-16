@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Bell, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
@@ -39,7 +40,14 @@ export default function Navbar({ user }: NavbarProps) {
           href={user ? dashboardHref : "/"}
           className="flex items-center gap-2"
         >
-          <span className="text-amber-500 text-xl">&#9874;</span>
+          {/* <span className="text-amber-500 text-xl">&#9874;</span> */}
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            width={28}
+            height={28}
+            className="w-8 h-8 md:w-8 md:h-8"
+          />
           <span className="font-bold text-stone-900 tracking-tight">
             ArtisanQuarters
           </span>

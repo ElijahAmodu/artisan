@@ -118,3 +118,14 @@ export interface CreateJobFormData {
   description: string;
   budget: number;
 }
+
+export type NegotiationOffer = {
+  id: string;
+  job_id: string;
+  proposed_by: string;
+  proposed_by_profile: { full_name: string } | null;
+  amount: number;
+  note: string | null;
+  status: string;
+  created_at: string;
+};

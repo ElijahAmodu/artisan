@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Hammer, User, ShieldCheck, Star, Lock } from "lucide-react";
+import { User, ShieldCheck, Star, Lock, Hammer } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -7,7 +8,16 @@ export default function Home() {
       <header className="border-b border-stone-100 bg-white">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Hammer size={20} className="text-amber-500" />
+            <Link href="/" className="">
+              <Image
+                src="/logo.svg"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="w-8 h-8 md:w-12 md:h-12"
+              />
+            </Link>
+
             <span className="font-bold text-stone-900 tracking-tight text-lg">
               ArtisanQuarters
             </span>
