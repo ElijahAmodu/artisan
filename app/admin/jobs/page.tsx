@@ -20,7 +20,7 @@ export default async function AdminJobsPage() {
   const allJobs = jobs ?? [];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-5 fade-up">
+    <div className="max-w-7xl mx-auto space-y-5 fade-up">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-stone-900">All Jobs</h1>
         <span className="text-sm text-stone-400">{allJobs.length} shown</span>

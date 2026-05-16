@@ -277,7 +277,7 @@ function RegisterForm() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 555 000 0000"
+                  placeholder="+234 900 000 0000"
                   className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                 />
               </div>
