@@ -24,11 +24,11 @@ export default async function ArtisanDashboardPage() {
     .single();
 
   // Fetch all pending job requests assigned to this artisan.
-  const { data: pendingJobs } = await supabase
+  const { data: pendingAndNegotiatingJobs } = await supabase
     .from("jobs")
     .select("*, client:profiles!jobs_client_id_fkey(full_name, email, phone)")
     .eq("artisan_id", user!.id)
-    .eq("status", "pending")
+    .in("status", ["pending", "negotiating"])
     .order("created_at", { ascending: false });
 
   // Fetch recently accepted/in-progress jobs for the active job card.
@@ -36,14 +36,40 @@ export default async function ArtisanDashboardPage() {
     .from("jobs")
     .select("*, client:profiles!jobs_client_id_fkey(full_name, email, phone)")
     .eq("artisan_id", user!.id)
-    .in("status", ["accepted", "in_progress"])
+    .in("status", ["accepted", "awaiting_payment", "in_progress"])
     .order("updated_at", { ascending: false });
+
+  const negotiatingIds = (pendingAndNegotiatingJobs ?? [])
+    .filter((j) => j.status === "negotiating")
+    .map((j) => j.id);
+
+  const { data: latestOffers } = await supabase
+    .from("negotiations")
+    .select(
+      "*, proposed_by_profile:profiles!negotiations_proposed_by_fkey(full_name)",
+    )
+    .in("job_id", negotiatingIds.length ? negotiatingIds : ["none"])
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  const offersByJob = (latestOffers ?? []).reduce<
+    Record<string, (typeof latestOffers)[number]>
+  >((acc, offer) => {
+    if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+    return acc;
+  }, {});
 
   return (
     <ArtisanDashboardClient
       artisanProfile={artisanProfile}
       profile={profile}
-      pendingJobs={pendingJobs ?? []}
+      pendingJobs={(pendingAndNegotiatingJobs ?? []).filter(
+        (j) => j.status === "pending",
+      )}
+      negotiatingJobs={(pendingAndNegotiatingJobs ?? []).filter(
+        (j) => j.status === "negotiating",
+      )}
+      offersByJob={offersByJob}
       activeJobs={activeJobs ?? []}
       userId={user!.id}
     />

@@ -94,3 +94,17 @@ body {
 .pulse {
   animation: pulse-dot 1.8s ease-in-out infinite;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-100% + 90px));
+  }
+}
+
+.animate-marquee {
+  animation: marquee 3s linear infinite alternate;
+}

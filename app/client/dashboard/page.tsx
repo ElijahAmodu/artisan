@@ -3,6 +3,8 @@ import Link from "next/link";
 import { formatCurrency, timeAgo, getStatusMeta } from "@/lib/utils";
 import { Search, MessageSquare, Star } from "lucide-react";
 import ReviewModal from "@/components/client/ReviewModal";
+import NegotiatingJobCard from "@/components/client/NegotiatingJob";
+import PaymentEscrowPrompt from "@/components/client/PaymentEscrowPrompt";
 
 // Client dashboard: shows active jobs and job history with contextual actions.
 export default async function ClientDashboardPage() {
@@ -25,11 +27,40 @@ export default async function ClientDashboardPage() {
     .order("created_at", { ascending: false });
 
   const allJobs = jobs ?? [];
+
+  // Fetch the latest pending negotiation offer for each negotiating job
+  const negotiatingIds = allJobs
+    .filter((j) => j.status === "negotiating")
+    .map((j) => j.id);
+
+  const { data: latestOffers } = await supabase
+    .from("negotiations")
+    .select(
+      "*, proposed_by_profile:profiles!negotiations_proposed_by_fkey(full_name)",
+    )
+    .in("job_id", negotiatingIds.length ? negotiatingIds : ["none"])
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  // Build a map of job_id → latest offer (first one per job after sort)
+  const offersByJob = (latestOffers ?? []).reduce<
+    Record<string, (typeof latestOffers)[number]>
+  >((acc, offer) => {
+    if (!acc[offer.job_id]) acc[offer.job_id] = offer;
+    return acc;
+  }, {});
+
   const activeJobs = allJobs.filter((j) =>
     ["pending", "accepted", "in_progress"].includes(j.status),
   );
+  const negotiatingJobs = allJobs.filter((j) => j.status === "negotiating");
+
   const pastJobs = allJobs.filter((j) =>
     ["completed", "declined", "disputed"].includes(j.status),
+  );
+
+  const awaitingPaymentJobs = allJobs.filter(
+    (j) => j.status === "awaiting_payment",
   );
 
   // Check which completed jobs already have a review.
@@ -62,6 +93,33 @@ export default async function ClientDashboardPage() {
           <Search size={14} /> Find a Pro
         </Link>
       </div>
+
+      {negotiatingJobs.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide">
+            Awaiting Your Response
+          </h2>
+          {negotiatingJobs.map((job) => (
+            <NegotiatingJobCard
+              key={job.id}
+              job={job}
+              offer={offersByJob[job.id] ?? null}
+              clientId={user!.id}
+            />
+          ))}
+        </section>
+      )}
+
+      {awaitingPaymentJobs.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-xs font-semibold text-stone-400 uppercase tracking-wide">
+            Action Required
+          </h2>
+          {awaitingPaymentJobs.map((job) => (
+            <PaymentEscrowPrompt key={job.id} job={job} clientId={user!.id} />
+          ))}
+        </section>
+      )}
 
       {/* Active jobs section */}
       {activeJobs.length > 0 && (

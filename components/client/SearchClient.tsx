@@ -86,133 +86,145 @@ export default function SearchClient({ artisans, clientId }: Props) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5 fade-up">
-      <div>
-        <h1 className="text-xl font-bold text-stone-900">Find a Pro</h1>
-        <p className="text-sm text-stone-400 mt-1">
-          Search by skill, name, or location.
-        </p>
-      </div>
-
-      {/* Search input */}
-      <div className="relative">
-        <Search
-          size={16}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
-        />
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search skills (e.g. Plumber)…"
-          className="w-full h-11 pl-9 pr-4 rounded-xl border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
-        />
-      </div>
-
-      {/* Artisan cards */}
-      {filtered.length === 0 && (
-        <div className="bg-white rounded-2xl border border-stone-100 p-10 text-center">
-          <p className="text-stone-400 text-sm">
-            No artisans found for &ldquo;{query}&rdquo;
+    <>
+      <div className="max-w-7xl mx-auto space-y-5 fade-up">
+        <div>
+          <h1 className="text-xl font-bold text-stone-900">Find a Pro</h1>
+          <p className="text-sm text-stone-400 mt-1">
+            Search by skill, name, or location.
           </p>
         </div>
-      )}
 
-      {filtered.map((artisan) => (
-        <div
-          key={artisan.id}
-          className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex items-center gap-3">
-              {/* Avatar initials */}
-              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-sm font-bold text-amber-700 shrink-0">
-                {artisan.profiles?.full_name[0] ?? "?"}
-              </div>
-              <div>
-                <p className="font-semibold text-stone-900">
-                  {artisan.profiles?.full_name}
-                </p>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <Star size={12} className="text-amber-400 fill-amber-400" />
-                  <span className="text-xs text-stone-600 font-medium">
-                    {artisan.rating > 0 ? artisan.rating.toFixed(1) : "New"}
+        {/* Search input */}
+        <div className="relative">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search skills (e.g. Plumber)…"
+            className="w-full h-11 pl-9 pr-4 rounded-xl border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
+          />
+        </div>
+
+        {/* Artisan cards */}
+        {filtered.length === 0 && (
+          <div className="bg-white rounded-2xl border border-stone-100 p-10 text-center">
+            <p className="text-stone-400 text-sm">
+              No artisans found for &ldquo;{query}&rdquo;
+            </p>
+          </div>
+        )}
+
+        {filtered.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {filtered.map((artisan) => (
+              <div
+                key={artisan.id}
+                className="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3">
+                    {/* Avatar initials */}
+                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-sm font-bold text-amber-700 shrink-0">
+                      {artisan.profiles?.full_name[0] ?? "?"}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-stone-900">
+                        {artisan.profiles?.full_name}
+                      </p>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <Star
+                          size={12}
+                          className="text-amber-400 fill-amber-400"
+                        />
+                        <span className="text-xs text-stone-600 font-medium">
+                          {artisan.rating > 0
+                            ? artisan.rating.toFixed(1)
+                            : "New"}
+                        </span>
+                        {artisan.total_reviews > 0 && (
+                          <span className="text-xs text-stone-400">
+                            ({artisan.total_reviews})
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Availability badge */}
+                  <span
+                    className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border ${
+                      artisan.is_available
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-stone-50 text-stone-500 border-stone-200"
+                    }`}
+                  >
+                    {artisan.is_available ? "Available" : "Busy"}
                   </span>
-                  {artisan.total_reviews > 0 && (
-                    <span className="text-xs text-stone-400">
-                      ({artisan.total_reviews})
+                </div>
+
+                {/* Skills */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {artisan.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-2 py-0.5 bg-stone-100 text-stone-600 text-xs rounded-full"
+                    >
+                      {skill}
                     </span>
-                  )}
+                  ))}
+                </div>
+
+                {artisan.bio && (
+                  <p className="text-sm text-stone-500 mb-3 line-clamp-2">
+                    {artisan.bio}
+                  </p>
+                )}
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-xs text-stone-400">
+                    {artisan.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin size={11} /> {artisan.location}
+                      </span>
+                    )}
+                    {artisan.hourly_rate && (
+                      <span className="flex items-center gap-1">
+                        {/* <DollarSign size={11} /> */}
+                        {formatCurrency(artisan.hourly_rate)}
+                        /hr
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setSelected(artisan);
+                      setTitle("");
+                      setDescription("");
+                      setBudget("");
+                      setError("");
+                    }}
+                    disabled={!artisan.is_available}
+                    className="px-4 py-1.5 bg-stone-900 text-white text-xs font-medium rounded-lg hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Hire
+                  </button>
                 </div>
               </div>
-            </div>
-
-            {/* Availability badge */}
-            <span
-              className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border ${
-                artisan.is_available
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                  : "bg-stone-50 text-stone-500 border-stone-200"
-              }`}
-            >
-              {artisan.is_available ? "Available" : "Busy"}
-            </span>
-          </div>
-
-          {/* Skills */}
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {artisan.skills.map((skill) => (
-              <span
-                key={skill}
-                className="px-2 py-0.5 bg-stone-100 text-stone-600 text-xs rounded-full"
-              >
-                {skill}
-              </span>
             ))}
           </div>
+        )}
 
-          {artisan.bio && (
-            <p className="text-sm text-stone-500 mb-3 line-clamp-2">
-              {artisan.bio}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 text-xs text-stone-400">
-              {artisan.location && (
-                <span className="flex items-center gap-1">
-                  <MapPin size={11} /> {artisan.location}
-                </span>
-              )}
-              {artisan.hourly_rate && (
-                <span className="flex items-center gap-1">
-                  <DollarSign size={11} /> {formatCurrency(artisan.hourly_rate)}
-                  /hr
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={() => {
-                setSelected(artisan);
-                setTitle("");
-                setDescription("");
-                setBudget("");
-                setError("");
-              }}
-              disabled={!artisan.is_available}
-              className="px-4 py-1.5 bg-stone-900 text-white text-xs font-medium rounded-lg hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Hire
-            </button>
-          </div>
-        </div>
-      ))}
-
-      {/* Hire modal */}
+        {/* Hire modal */}
+      </div>
       {selected && (
         <div
-          className="fixed inset-0 z-50  flex items-center justify-center p-4 min-h-screen"
+          className="fixed inset-0 z-50  flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 min-h-screen"
           onClick={() => setSelected(null)}
         >
           <div
@@ -261,7 +273,7 @@ export default function SearchClient({ artisans, clientId }: Props) {
 
               <div>
                 <label className="block text-xs font-medium text-stone-500 mb-1">
-                  Budget ($)
+                  Budget (NGN)
                 </label>
                 <input
                   type="number"
@@ -307,6 +319,6 @@ export default function SearchClient({ artisans, clientId }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

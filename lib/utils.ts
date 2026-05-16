@@ -61,6 +61,14 @@ export function getStatusMeta(status: string): {
       label: "Disputed",
       color: "text-orange-600 bg-orange-50 border-orange-200",
     },
+    negotiating: {
+      label: "Negotiating",
+      color: "text-violet-600 bg-violet-50 border-violet-200",
+    },
+    awaiting_payment: {
+      label: "Awaiting Payment",
+      color: "text-orange-600 bg-orange-50 border-orange-200",
+    },
   };
   return (
     map[status] ?? {

@@ -471,7 +471,7 @@ function RegisterForm() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-stone-500 mb-1">
-                    Hourly Rate ($)
+                    Hourly Rate (NGN)
                   </label>
                   <input
                     type="number"
@@ -482,17 +482,6 @@ function RegisterForm() {
                     className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
                   />
                 </div>
-                {/* <div>
-                  <label className="block text-xs font-medium text-stone-500 mb-1">
-                    Location
-                  </label>
-                  <input
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Lagos, Nigeria"
-                    className="w-full h-10 px-3 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-900 transition"
-                  />
-                </div> */}
                 <div>
                   <label className="block text-xs font-medium text-stone-500 mb-1">
                     Location
